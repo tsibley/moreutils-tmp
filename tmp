@@ -1,0 +1,42 @@
+#!/bin/bash
+function usage() {
+    prog=$(basename $0)
+    cat <<.
+usage: $prog [-e extension] [command ...]
+       $prog -h
+
+Writes stdin to a temporary file and passes the file to the specified command.
+
+If no command is given, the temporary filename is printed and $prog exits.
+.
+}
+[[ -z "$*" && -t 0 ]] && usage && exit 0
+
+args=`getopt he: $*`
+if [[ $? -ne 0 ]]; then
+    usage
+    exit 1
+fi
+set -- $args
+for arg; do
+    case "$arg" in
+        -e)
+            ext=.$2
+            shift 2;;
+        -h)
+            usage
+            exit 0;;
+        --)
+            shift; break;;
+    esac
+done
+
+# This is a bit of a hack, as BSD's mktemp treats the 2nd argument as a prefix
+# not a template.  Shell compat sucks.
+tmp=`mktemp -t tmp-$$-XXXXXX`$ext
+cat > $tmp
+if [[ -n "$*" ]]; then
+    exec "$@" $tmp
+else
+    echo $tmp
+fi

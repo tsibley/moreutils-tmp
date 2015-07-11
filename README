@@ -1,0 +1,6 @@
+usage: tmp [-e extension] [command ...]
+       tmp -h
+
+Writes stdin to a temporary file and passes the file to the specified command.
+
+If no command is given, the temporary filename is printed and tmp exits.

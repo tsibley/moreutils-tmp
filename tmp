@@ -31,6 +31,8 @@ for arg; do
     esac
 done
 
+set -e
+
 # This is a bit of a hack, as BSD's mktemp treats the 2nd argument as a prefix
 # not a template.  Shell compat sucks.
 tmp=`mktemp -t tmp-$$-XXXXXX`$ext
